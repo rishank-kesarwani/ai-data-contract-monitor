@@ -18,6 +18,7 @@ import {
   UploadCloud,
 } from 'lucide-react';
 import { UserSession } from '../lib/types';
+import { OptimizedImage } from './OptimizedImage';
 
 interface NavigationProps {
   activeTab: string;
@@ -108,9 +109,17 @@ export const Navigation: React.FC<NavigationProps> = ({
               alignItems: 'center',
               justifyContent: 'center',
               boxShadow: 'var(--border-glow)',
+              overflow: 'hidden',
             }}
           >
-            <ShieldCheck size={24} style={{ color: 'var(--accent-cyan)' }} />
+            <OptimizedImage
+              src="/icon.svg"
+              alt="AI Data Contract Monitor Brand Icon"
+              width={26}
+              height={26}
+              priority
+              unoptimized
+            />
           </div>
           <div>
             <div

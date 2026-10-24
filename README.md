@@ -22,6 +22,7 @@
 8. [Local Development & Testing](#local-development--testing)
 9. [Smoke Testing & Verification Guide](#smoke-testing--verification-guide)
 10. [Troubleshooting & FAQ](#troubleshooting--faq)
+11. [Vercel Image Optimization & Quota Architecture](#vercel-image-optimization--quota-architecture)
 
 ---
 
@@ -410,6 +411,25 @@ All views are mobile-optimized. In particular:
 - The interactive consumer impact topology graph automatically switches to a high-contrast card list showing field-level dependencies and blocking alerts.
 - Schema comparison diffs support horizontal touch scrolling and monospace formatting without clipping.
 - Tables collapse into scannable stacked cards.
+
+---
+
+## Vercel Image Optimization & Quota Architecture
+
+To protect the team's 5,000 monthly Vercel Image Optimization transformation allowance and prevent broken image states on production deployments, the frontend employs a zero-waste asset delivery strategy:
+
+1. **Selective `unoptimized` Direct Serving**:
+   - All vector icons and SVGs (such as `/icon.svg`) bypass Vercel's `/_next/image` rasterizer via `unoptimized={true}`.
+   - Small icons and thumbnails (dimensions $\le$ 64px) are automatically served directly without incurring transformation quota overhead.
+2. **Pruned Responsive Matrix (`next.config.js`)**:
+   - `deviceSizes` pruned from 8 down to 3 (`[640, 1080, 1920]`), eliminating 62.5% of potential responsive variants.
+   - `imageSizes` pruned from 8 down to 4 (`[32, 64, 128, 256]`).
+   - `minimumCacheTTL` extended from the 60-second default to **1 year (31,536,000s)** to prevent repeated re-transformations of cached assets.
+3. **Immutable Static Cache Headers (`vercel.json`)**:
+   - Assets in `/public` and `/_next/static/` are cached on the Vercel Edge Network for 1 year (`public, max-age=31536000, immutable`).
+4. **Resilient `<OptimizedImage>` Component**:
+   - Enforces automatic unoptimized detection, explicit dimensions for 0 Cumulative Layout Shift (CLS), and self-healing `onError` fallback handling if Vercel's transformation quota is exceeded (HTTP 402).
+   - Complete architectural decisions, formulas, and asset addition rules are documented in [`IMAGE_OPTIMIZATION.md`](IMAGE_OPTIMIZATION.md).
 
 ---
 
