@@ -35,9 +35,9 @@ async function bootstrap() {
     credentials: true,
   });
 
-  // Global Prefix (Excluding health endpoints)
+  // Global Prefix (Excluding root discovery and health endpoints)
   app.setGlobalPrefix(apiPrefix, {
-    exclude: ['health', 'health/live', 'health/ready'],
+    exclude: ['', '/', 'health', 'health/live', 'health/ready'],
   });
 
   // Global Validation

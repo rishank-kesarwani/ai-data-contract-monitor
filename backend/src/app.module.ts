@@ -21,6 +21,7 @@ import { PublicAccessGuard } from './common/guards/public-access.guard';
 import { RolesGuard } from './common/guards/roles.guard';
 import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
 import { CorrelationIdMiddleware } from './common/middleware/correlation-id.middleware';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
@@ -51,6 +52,7 @@ import { CorrelationIdMiddleware } from './common/middleware/correlation-id.midd
     AuditModule,
     DemoModule,
   ],
+  controllers: [AppController],
   providers: [
     {
       provide: APP_GUARD,
@@ -68,6 +70,6 @@ import { CorrelationIdMiddleware } from './common/middleware/correlation-id.midd
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(CorrelationIdMiddleware).forRoutes('*');
+    consumer.apply(CorrelationIdMiddleware).forRoutes('{*path}');
   }
 }
