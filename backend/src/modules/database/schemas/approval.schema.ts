@@ -4,7 +4,7 @@ import { ApprovalDecisionRecord } from '../../../common/types';
 
 export type ApprovalDocument = ApprovalEntity & Document;
 
-@Schema({ collection: 'approvals', timestamps: true })
+@Schema({ collection: 'data_contract_approvals', timestamps: true })
 export class ApprovalEntity {
   @Prop({ required: true, unique: true, index: true })
   id: string;

@@ -10,7 +10,7 @@ import {
 
 export type DriftReportDocument = DriftReportEntity & Document;
 
-@Schema({ collection: 'drift_reports', timestamps: true })
+@Schema({ collection: 'data_contract_drift_reports', timestamps: true })
 export class DriftReportEntity {
   @Prop({ required: true, unique: true, index: true })
   id: string;

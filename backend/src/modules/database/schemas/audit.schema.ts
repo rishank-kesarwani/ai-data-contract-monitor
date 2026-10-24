@@ -3,10 +3,13 @@ import { Document } from 'mongoose';
 
 export type AuditDocument = AuditEntity & Document;
 
-@Schema({ collection: 'audit_logs', timestamps: true })
+@Schema({ collection: 'data_contract_audit_logs', timestamps: true })
 export class AuditEntity {
   @Prop({ required: true, unique: true, index: true })
   id: string;
+
+  @Prop({ required: false, index: true, sparse: true })
+  auditId?: string;
 
   @Prop({ required: true, index: true })
   timestamp: string;

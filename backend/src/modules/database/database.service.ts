@@ -333,7 +333,14 @@ export class DatabaseService {
 
   async saveAuditLog(entry: AuditLogEntry): Promise<AuditLogEntry> {
     if (this.isMongoActive() && this.auditModel) {
-      await this.auditModel.create(entry);
+      try {
+        const toSave = { ...entry, auditId: entry.id };
+        await this.auditModel.create(toSave);
+      } catch (err: any) {
+        this.logger.warn(
+          `Failed to persist audit log to MongoDB: ${err.message}. Retaining in memory audit log.`,
+        );
+      }
     }
     this.memoryAuditLogs.unshift({ ...entry });
     if (this.memoryAuditLogs.length > 500) {
@@ -353,6 +360,7 @@ export class DatabaseService {
       if (this.consumerModel) await this.consumerModel.deleteMany({}).exec();
       if (this.proposalModel) await this.proposalModel.deleteMany({}).exec();
       if (this.approvalModel) await this.approvalModel.deleteMany({}).exec();
+      if (this.auditModel) await this.auditModel.deleteMany({}).exec();
     }
     this.memoryContracts.clear();
     this.memorySnapshots.clear();
@@ -360,5 +368,6 @@ export class DatabaseService {
     this.memoryConsumers.clear();
     this.memoryProposals.clear();
     this.memoryApprovals.clear();
+    this.memoryAuditLogs.length = 0;
   }
 }

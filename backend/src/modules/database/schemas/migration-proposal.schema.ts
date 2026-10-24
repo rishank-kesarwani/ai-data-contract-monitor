@@ -4,7 +4,7 @@ import { MigrationPhase, SchemaField } from '../../../common/types';
 
 export type MigrationProposalDocument = MigrationProposalEntity & Document;
 
-@Schema({ collection: 'migration_proposals', timestamps: true })
+@Schema({ collection: 'data_contract_proposals', timestamps: true })
 export class MigrationProposalEntity {
   @Prop({ required: true, unique: true, index: true })
   id: string;

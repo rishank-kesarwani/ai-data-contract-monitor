@@ -4,7 +4,7 @@ import { SnapshotField } from '../../../common/types';
 
 export type SnapshotDocument = SnapshotEntity & Document;
 
-@Schema({ collection: 'schema_snapshots', timestamps: true })
+@Schema({ collection: 'data_contract_snapshots', timestamps: true })
 export class SnapshotEntity {
   @Prop({ required: true, unique: true, index: true })
   id: string;

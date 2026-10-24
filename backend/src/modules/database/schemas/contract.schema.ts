@@ -11,7 +11,7 @@ import {
 
 export type ContractDocument = ContractEntity & Document;
 
-@Schema({ collection: 'contracts', timestamps: true })
+@Schema({ collection: 'data_contract_contracts', timestamps: true })
 export class ContractEntity {
   @Prop({ required: true, unique: true, index: true })
   id: string;

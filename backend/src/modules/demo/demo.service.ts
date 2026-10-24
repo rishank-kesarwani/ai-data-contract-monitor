@@ -20,11 +20,18 @@ export class DemoService implements OnApplicationBootstrap {
   ) {}
 
   async onApplicationBootstrap() {
-    // Seed initial demo data if empty
-    const existing = await this.db.getContracts();
-    if (existing.length === 0) {
-      this.logger.log('Seeding initial demo workspace data...');
-      await this.seedDemoWorkspace();
+    try {
+      // Seed initial demo data if empty
+      const existing = await this.db.getContracts();
+      if (existing.length === 0) {
+        this.logger.log('Seeding initial demo workspace data...');
+        await this.seedDemoWorkspace();
+      }
+    } catch (err: any) {
+      this.logger.error(
+        `Failed to seed initial demo workspace data during bootstrap: ${err.message}`,
+        err.stack,
+      );
     }
   }
 

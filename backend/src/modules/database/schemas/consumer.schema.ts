@@ -4,7 +4,7 @@ import { ConsumerCriticality, ConsumerInterface } from '../../../common/types';
 
 export type ConsumerDocument = ConsumerEntity & Document;
 
-@Schema({ collection: 'consumers', timestamps: true })
+@Schema({ collection: 'data_contract_consumers', timestamps: true })
 export class ConsumerEntity {
   @Prop({ required: true, unique: true, index: true })
   id: string;
