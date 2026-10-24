@@ -53,13 +53,14 @@ export default function Home() {
   const fetchData = useCallback(async () => {
     try {
       setError(null);
+      const isAuth = api.isAuthenticated();
       const [c, d, cons, a, propsList, aud, prof] = await Promise.all([
         api.getContracts().catch(() => []),
         api.getDriftReports().catch(() => []),
         api.getConsumers().catch(() => []),
         api.getApprovals().catch(() => []),
         api.getProposals().catch(() => []),
-        api.getAuditLogs().catch(() => []),
+        isAuth ? api.getAuditLogs().catch(() => []) : Promise.resolve([]),
         api.getProfile().catch(() => ({
           authenticated: false,
           user: { id: 'public-viewer', username: 'Guest Viewer', role: 'PUBLIC_VIEWER' as const },
@@ -273,7 +274,13 @@ export default function Home() {
               />
             )}
 
-            {activeTab === 'audit' && <AuditTrail auditLogs={auditLogs} />}
+            {activeTab === 'audit' && (
+              <AuditTrail
+                auditLogs={auditLogs}
+                isPublicViewer={user.role === 'PUBLIC_VIEWER'}
+                onOpenAuthModal={() => setAuthModalOpen(true)}
+              />
+            )}
           </>
         )}
       </main>

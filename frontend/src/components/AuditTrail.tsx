@@ -6,9 +6,15 @@ import { AuditLogEntry } from '../lib/types';
 
 interface AuditTrailProps {
   auditLogs: AuditLogEntry[];
+  isPublicViewer?: boolean;
+  onOpenAuthModal?: () => void;
 }
 
-export const AuditTrail: React.FC<AuditTrailProps> = ({ auditLogs }) => {
+export const AuditTrail: React.FC<AuditTrailProps> = ({
+  auditLogs,
+  isPublicViewer = false,
+  onOpenAuthModal,
+}) => {
   const [resourceFilter, setResourceFilter] = useState<string>('ALL');
   const [searchTerm, setSearchTerm] = useState('');
   const [activeLog, setActiveLog] = useState<AuditLogEntry | null>(null);
@@ -106,8 +112,44 @@ export const AuditTrail: React.FC<AuditTrailProps> = ({ auditLogs }) => {
             <tbody>
               {filteredLogs.length === 0 ? (
                 <tr>
-                  <td colSpan={6} style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-dim)' }}>
-                    No audit log records found matching the filter.
+                  <td colSpan={6} style={{ padding: '3rem 2rem', textAlign: 'center' }}>
+                    {isPublicViewer ? (
+                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.75rem' }}>
+                        <div
+                          style={{
+                            width: '44px',
+                            height: '44px',
+                            borderRadius: '12px',
+                            background: 'rgba(99, 102, 241, 0.15)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            color: 'var(--accent-indigo)',
+                          }}
+                        >
+                          <Shield size={22} />
+                        </div>
+                        <div style={{ fontSize: '1rem', fontWeight: 700, color: '#f8fafc' }}>
+                          Operator Authentication Required
+                        </div>
+                        <p style={{ color: 'var(--text-muted)', fontSize: '0.82rem', maxWidth: '440px', lineHeight: 1.5 }}>
+                          Public access permits inspecting data contracts, schema diffs, and consumer blast radius. Immutable audit records and decisions require operator sign-in.
+                        </p>
+                        {onOpenAuthModal && (
+                          <button
+                            onClick={onOpenAuthModal}
+                            className="btn btn-primary"
+                            style={{ marginTop: '0.5rem', padding: '0.5rem 1.25rem', fontSize: '0.85rem' }}
+                          >
+                            Sign In as Operator
+                          </button>
+                        )}
+                      </div>
+                    ) : (
+                      <span style={{ color: 'var(--text-dim)' }}>
+                        No audit log records found matching the filter.
+                      </span>
+                    )}
                   </td>
                 </tr>
               ) : (

@@ -50,6 +50,11 @@ export const api = {
     }
   },
 
+  isAuthenticated(): boolean {
+    if (typeof window === 'undefined') return false;
+    return !!localStorage.getItem('auth_token');
+  },
+
   async getProfile(): Promise<{ authenticated: boolean; user: UserSession }> {
     try {
       const res = await apiClient.get('/auth/me');

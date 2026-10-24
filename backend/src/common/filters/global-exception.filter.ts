@@ -46,13 +46,21 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       (request.headers['x-correlation-id'] as string) ||
       'unknown-corr-id';
 
-    // Log the error securely without leaking passwords or secrets
-    this.logger.error(
-      `[${correlationId}] ${request.method} ${request.url} Status: ${status} - Error: ${JSON.stringify(
-        message,
-      )}`,
-      exception instanceof Error ? exception.stack : undefined,
-    );
+    // Log 5xx internal server errors as error with stack trace; log 4xx client errors as warn without stack trace
+    if (status >= 500) {
+      this.logger.error(
+        `[${correlationId}] ${request.method} ${request.url} Status: ${status} - Error: ${JSON.stringify(
+          message,
+        )}`,
+        exception instanceof Error ? exception.stack : undefined,
+      );
+    } else {
+      this.logger.warn(
+        `[${correlationId}] ${request.method} ${request.url} Status: ${status} - ${JSON.stringify(
+          message,
+        )}`,
+      );
+    }
 
     response.status(status).json({
       statusCode: status,
